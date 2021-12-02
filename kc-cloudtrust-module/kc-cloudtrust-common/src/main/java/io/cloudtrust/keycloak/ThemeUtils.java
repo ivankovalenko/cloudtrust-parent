@@ -19,20 +19,43 @@ public class ThemeUtils {
     /**
      * Look for the theme of the current realm
      *
+     * @param session The Keycloak session
      * @param type Theme type
      * @return A type (if any was found)
      * @throws IOException
      */
     public static Theme findTheme(KeycloakSession session, Theme.Type type) throws IOException {
         RealmModel realm = session.getContext().getRealm();
-        String loginTheme = realm.getLoginTheme();
+        switch (type) {
+            case ACCOUNT:
+                return findThemeByName(session, type, realm.getAccountTheme());
+            case ADMIN:
+                return findThemeByName(session, type, realm.getAdminTheme());
+            case EMAIL:
+                return findThemeByName(session, type, realm.getEmailTheme());
+            case LOGIN:
+                return findThemeByName(session, type, realm.getLoginTheme());
+        }
+        return null;
+    }
+
+    /**
+     * Look for a specific theme
+     *
+     * @param session The Keycloak session
+     * @param type Theme type
+     * @param name The theme name
+     * @return A type (if any was found)
+     * @throws IOException
+     */
+    public static Theme findThemeByName(KeycloakSession session, Theme.Type type, String name) throws IOException {
         Set<ThemeProvider> providers = session.getAllProviders(ThemeProvider.class);
         // We iterate through all the theme providers
         for (ThemeProvider provider : providers) {
             // If we've found a provider for this login theme...
-            if (provider.hasTheme(loginTheme, type)) {
+            if (provider.hasTheme(name, type)) {
                 // We return the the theme.
-                return provider.getTheme(loginTheme, type);
+                return provider.getTheme(name, type);
             }
         }
         return null;
@@ -46,12 +69,17 @@ public class ThemeUtils {
      * @throws IOException
      */
     public static InputStream getStreamToResourceImage(KeycloakSession session, String path) throws IOException {
+        // We grab the current theme
         Theme theme = findTheme(session, Theme.Type.LOGIN);
-        if (theme != null) {
-            // And return a stream to the resource
+        while (theme != null) {
+            // We try to get a stream to the image...
             InputStream stream = theme.getResourceAsStream(path);
+            // If we could, we're done!
             if (stream != null) {
                 return stream;
+            } else {
+                // If we couldn't, then we will look in the parent theme instead
+                theme = findThemeByName(session, Theme.Type.LOGIN, theme.getParentName());
             }
         }
         return null;
