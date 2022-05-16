@@ -1,8 +1,11 @@
 package io.cloudtrust.keycloak.test.util;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -25,10 +28,16 @@ public class WebDriverFactory {
             String driver = TestSuiteParameters.get().getEnv("browser", "");
             switch (driver) {
                 case "chrome":
-                    webDriver = createChromeDriver();
+                    webDriver = createChromeDriver(false);
+                    break;
+                case "chrome-headless":
+                    webDriver = createChromeDriver(true);
                     break;
                 case "firefox":
-                    webDriver = createFirefoxDriver();
+                    webDriver = createFirefoxDriver(false);
+                    break;
+                case "firefox-headless":
+                    webDriver = createFirefoxDriver(true);
                     break;
                 default:
                     webDriver = createHtmlUnitDriver();
@@ -41,21 +50,19 @@ public class WebDriverFactory {
         return new CloudtrustHtmlUnitDriver(ignorePatterns);
     }
 
-    private static WebDriver createChromeDriver() {
-		/*
-		String key = "webdriver.chrome.driver";
-		String systemValue = System.getenv(key);
-		String envDriver = TestSuiteParameters.get().getEnv(key, null);
-		if (envDriver!=null && !envDriver.equals(systemValue)) {
-			EnvironmentVariables vars = new EnvironmentVariables();
-			vars.set(key, envDriver);
-			Assert.assertEquals(envDriver, System.getenv(key));
-		}
-		*/
-        return new ChromeDriver();
+    private static WebDriver createChromeDriver(boolean headless) {
+        WebDriverManager.chromedriver().setup();
+        ChromeOptions options = new ChromeOptions();
+        if (headless) {
+            options.addArguments("--headless");
+        }
+        return new ChromeDriver(options);
     }
 
-    private static WebDriver createFirefoxDriver() {
-        return new FirefoxDriver();
+    private static WebDriver createFirefoxDriver(boolean headless) {
+        WebDriverManager.firefoxdriver().setup();
+        FirefoxOptions options = new FirefoxOptions();
+        options.setHeadless(headless);
+        return new FirefoxDriver(options);
     }
 }
