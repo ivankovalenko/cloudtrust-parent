@@ -5,13 +5,13 @@
     <parent>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-parent</artifactId>
-        <version>18.0.0</version>
+        <version>19.0.3</version>
         <relativePath/>
     </parent>
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-module</artifactId>
-    <version>18.0.0</version>
+    <version>19.0.3</version>
     <description>Parent for keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -20,15 +20,13 @@
     </modules>
 
     <properties>
-        <cloudtrust.version>3.0.0</cloudtrust.version>
-        <keycloak.version>18.0.0</keycloak.version>
+        <cloudtrust.version>3.1.0</cloudtrust.version>
+        <keycloak.version>19.0.3</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.4</apache-collections.version>
 
-        <mockito.version>2.28.2</mockito.version>
+        <mockito.version>4.8.1</mockito.version>
         <junit.version>5.8.2</junit.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
         <version.pmd.plugin>3.13.0</version.pmd.plugin>
         <version.jboss.maven.plugin>7.9.Final</version.jboss.maven.plugin>
         <version.wildfly.maven.plugin>2.0.2.Final</version.wildfly.maven.plugin>
@@ -142,10 +140,9 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.0</version>
+                    <version>3.10.1</version>
                     <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
+                        <release>11</release>
                     </configuration>
                 </plugin>
                 <plugin>
