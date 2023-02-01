@@ -3,7 +3,7 @@
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>cloudtrust-parent</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>4.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <scm>
@@ -22,26 +22,25 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <cloudtrust.version>3.0.0-SNAPSHOT</cloudtrust.version>
-        <keycloak.version>18.0.0</keycloak.version>
-        <kc-cloudtrust.version>18.0.0-SNAPSHOT</kc-cloudtrust.version>
+        <keycloak.version>20.0.5</keycloak.version>
 
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <jackson-core.version>2.13.2</jackson-core.version>
-        <jackson-databind.version>2.13.2.2</jackson-databind.version>
+        <jackson-core.version>2.14.2</jackson-core.version>
+        <jackson-databind.version>2.14.2</jackson-databind.version>
         <systemlambda.version>1.2.1</systemlambda.version>
 
-        <junit.version>5.8.2</junit.version>
-        <junit.platform.version>1.8.2</junit.platform.version>
+        <junit.version>5.9.2</junit.version>
+        <junit.platform.version>1.9.2</junit.platform.version>
         <hamcrest.version>1.3</hamcrest.version>
         <version.pmd.plugin>3.13.0</version.pmd.plugin>
-        <jacoco.version>0.8.7</jacoco.version>
-        <spotbugs.version>4.2.3</spotbugs.version>
-        <fb-contrib.version>7.4.7</fb-contrib.version>
-        <findsecbugs.version>1.11.0</findsecbugs.version>
-        <owasp-check.version>6.0.3</owasp-check.version>
+        <jacoco.version>0.8.8</jacoco.version>
+        <spotbugs.version>4.7.3.3</spotbugs.version>
+        <fb-contrib.version>7.6.0</fb-contrib.version>
+        <findsecbugs.version>1.12.0</findsecbugs.version>
+        <owasp-check.version>8.2.1</owasp-check.version>
     </properties>
 
     <distributionManagement>
@@ -60,7 +59,7 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>3.0.0-SNAPSHOT</version>
+                <version>4.0.0-SNAPSHOT</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

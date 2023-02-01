@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-parent</artifactId>
-        <version>18.0.0</version>
+        <version>20.0.5</version>
         <relativePath />
     </parent>
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-module</artifactId>
-    <version>18.0.0-SNAPSHOT</version>
+    <version>20.0.5-SNAPSHOT</version>
     <description>Parent for keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -19,26 +19,24 @@
     </modules>
 
     <properties>
-        <cloudtrust.version>3.0.0-SNAPSHOT</cloudtrust.version>
-        <keycloak.version>18.0.0</keycloak.version>
-        <kc-cloudtrust.version>18.0.0-SNAPSHOT</kc-cloudtrust.version>
+        <keycloak.version>20.0.5</keycloak.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.4</apache-collections.version>
-        <libphonenumber.version>8.13.3</libphonenumber.version>
+        <libphonenumber.version>8.13.7</libphonenumber.version>
+        <java.version>17</java.version>
+        <maven.compiler.release>${java.version}</maven.compiler.release>
 
-        <mockito.version>2.28.2</mockito.version>
-        <junit.version>5.8.2</junit.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <mockito.version>5.1.1</mockito.version>
+        <junit.version>5.9.2</junit.version>
         <version.pmd.plugin>3.13.0</version.pmd.plugin>
         <version.jboss.maven.plugin>7.9.Final</version.jboss.maven.plugin>
         <version.wildfly.maven.plugin>2.0.2.Final</version.wildfly.maven.plugin>
-        <version.frontend.maven.plugin>1.12.0</version.frontend.maven.plugin>
-        <jacoco.version>0.8.6</jacoco.version>
-        <spotbugs.version>4.2.3</spotbugs.version>
-        <fb-contrib.version>7.4.7</fb-contrib.version>
-        <findsecbugs.version>1.11.0</findsecbugs.version>
-        <owasp-check.version>6.0.3</owasp-check.version>
+        <version.frontend.maven.plugin>1.12.1</version.frontend.maven.plugin>
+        <jacoco.version>0.8.8</jacoco.version>
+        <spotbugs.version>4.7.3.3</spotbugs.version>
+        <fb-contrib.version>7.6.0</fb-contrib.version>
+        <findsecbugs.version>1.12.0</findsecbugs.version>
+        <owasp-check.version>8.2.1</owasp-check.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -81,12 +79,12 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>cloudtrust-common</artifactId>
-                <version>3.0.0-SNAPSHOT</version>
+                <version>4.0.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-common</artifactId>
-                <version>18.0.0-SNAPSHOT</version>
+                <version>20.0.5-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
@@ -133,6 +131,18 @@
             <dependency>
                 <groupId>org.keycloak</groupId>
                 <artifactId>keycloak-model-jpa</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-model-legacy</artifactId>
+                <version>${keycloak.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-model-legacy-private</artifactId>
                 <version>${keycloak.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -189,11 +199,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.10.0</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
+                    <version>3.11.0</version>
                 </plugin>
                 <plugin>
                     <groupId>org.jacoco</groupId>
@@ -220,19 +226,20 @@
                     <version>3.1.1</version>
                     <executions>
                         <execution>
-                            <id>jar-with-dependencies</id>
+                            <id>default-package</id>
                             <phase>package</phase>
                             <goals>
                                 <goal>single</goal>
                             </goals>
-                            <configuration>
-                                <descriptorRefs>
-                                    <descriptorRef>jar-with-dependencies</descriptorRef>
-                                </descriptorRefs>
-                                <appendAssemblyId>false</appendAssemblyId>
-                            </configuration>
                         </execution>
                     </executions>
+                    <configuration>
+                        <appendAssemblyId>false</appendAssemblyId>
+                        <descriptors>
+                            <descriptor>assembly.xml</descriptor>
+                        </descriptors>
+                        <tarLongFileMode>posix</tarLongFileMode>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>com.github.spotbugs</groupId>

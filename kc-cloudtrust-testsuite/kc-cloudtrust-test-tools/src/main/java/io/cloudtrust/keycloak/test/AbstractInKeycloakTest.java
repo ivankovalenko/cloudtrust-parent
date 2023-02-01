@@ -1,6 +1,5 @@
 package io.cloudtrust.keycloak.test;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.cloudtrust.keycloak.test.container.KeycloakDeploy;
 import io.cloudtrust.keycloak.test.container.KeycloakQuarkusContainer;
@@ -9,14 +8,10 @@ import io.cloudtrust.keycloak.test.events.EventsManager;
 import io.cloudtrust.keycloak.test.http.HttpServerManager;
 import io.cloudtrust.keycloak.test.init.InjectionException;
 import io.cloudtrust.keycloak.test.init.TestInitializer;
-import io.cloudtrust.keycloak.test.matchers.EventMatchers;
 import io.cloudtrust.keycloak.test.util.ConsumerExcept;
 import io.cloudtrust.keycloak.test.util.FlowUtil;
 import io.cloudtrust.keycloak.test.util.JsonToolbox;
 import io.cloudtrust.keycloak.test.util.OidcTokenProvider;
-import io.undertow.server.HttpHandler;
-import org.apache.http.HttpEntity;
-import org.apache.http.NameValuePair;
 import org.jboss.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.keycloak.admin.client.Keycloak;
@@ -36,11 +31,8 @@ import org.keycloak.representations.idm.UserRepresentation;
 
 import javax.ws.rs.core.Response;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,8 +42,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
-
-import static org.hamcrest.MatcherAssert.assertThat;
 
 public abstract class AbstractInKeycloakTest {
     private static final Logger LOG = Logger.getLogger(AbstractInKeycloakTest.class);
@@ -65,42 +55,6 @@ public abstract class AbstractInKeycloakTest {
 
     protected HttpServerManager http() {
         return HttpServerManager.getDefault();
-    }
-
-    /**
-     * Deprecated: please use http().start(BasicHttpHandler instead)
-     *
-     * @param handler HttpHandler
-     */
-    @Deprecated
-    protected static void startHttpServer(HttpHandler handler) {
-        HttpServerManager.getDefault().startHttpServer(handler);
-    }
-
-    /**
-     * Deprecated: please use http().start(int port, BasicHttpHandler handler) instead
-     *
-     * @param handler HttpHandler
-     */
-    @Deprecated
-    protected static void startHttpServer(HttpHandler handler, int port) {
-        HttpServerManager.getDefault().startHttpServer(port, handler);
-    }
-
-    /**
-     * Deprecated: please use http().stop() instead
-     */
-    @Deprecated
-    protected static void stopHttpServer() {
-        HttpServerManager.getDefault().stop();
-    }
-
-    /**
-     * Deprecated: please use http().stop(int port) instead
-     */
-    @Deprecated
-    protected static void stopHttpServer(int port) {
-        HttpServerManager.getDefault().stop(port);
     }
 
     /**
@@ -525,87 +479,6 @@ public abstract class AbstractInKeycloakTest {
     }
 
     /**
-     * Events management: activate events
-     *
-     * @Deprecated Please use events().activate()
-     */
-    @Deprecated
-    public void activateEvents() {
-        events().activate(defaultRealmName);
-    }
-
-    /**
-     * @param realmName
-     * @Deprecated Please use events().activate(realmName)
-     */
-    @Deprecated
-    public void activateEvents(String realmName) {
-        events().activate(realmName);
-    }
-
-    /**
-     * @param realmName
-     * @param configConsumer
-     * @param adminEventsToo
-     * @Deprecated Please use events().activate(realmName, configConsumer) and adminEvents().activate(realmName)
-     */
-    @Deprecated
-    public void activateEvents(String realmName, Consumer<RealmEventsConfigRepresentation> configConsumer, boolean adminEventsToo) {
-        events().activate(realmName, configConsumer);
-        if (adminEventsToo) {
-            adminEvents().activate(realmName);
-        }
-    }
-
-    /**
-     * Event management: clear events
-     *
-     * @Deprecated Please use events().clear() and adminEvents().clear()
-     */
-    @Deprecated
-    public void clearEvents() {
-        events().clear();
-        adminEvents().clear();
-    }
-
-    /**
-     * Event management: poll event
-     *
-     * @Deprecated Please use events().poll()
-     */
-    @Deprecated
-    protected EventRepresentation pollEvent() {
-        return events().poll();
-    }
-
-    /**
-     * @param number
-     * @return
-     * @Deprecated Please use events().poll(int)
-     */
-    @Deprecated
-    protected Collection<EventRepresentation> pollEvents(int number) {
-        return events().poll(number);
-    }
-
-    /**
-     * @return
-     * @Deprecated Please use adminEvents().poll()
-     */
-    @Deprecated
-    protected AdminEventRepresentation pollAdminEvent() {
-        return adminEvents().poll();
-    }
-
-    /**
-     * @Deprecated Please use EventMatchers.doesNotExist()
-     */
-    @Deprecated
-    protected void assertHasNoEvent() {
-        assertThat(pollEvent(), EventMatchers.doesNotExist());
-    }
-
-    /**
      * API management
      */
     protected ExtensionApi api() {
@@ -613,105 +486,6 @@ public abstract class AbstractInKeycloakTest {
             extensionApi = new ExtensionApi(this.getKeycloakURL(), this.getKeycloakAdminClient());
         }
         return extensionApi;
-    }
-
-    /**
-     * @Deprecated Please use api().initToken();
-     */
-    @Deprecated
-    protected void initializeToken() {
-        api().initToken();
-    }
-
-    /**
-     * @return
-     * @Deprecated please use api().getToken()
-     */
-    @Deprecated
-    protected String getToken() {
-        return api().getToken();
-    }
-
-    /**
-     * @param accessToken
-     * @Deprecated : please use api().setToken(String);
-     */
-    @Deprecated
-    protected void setToken(String accessToken) {
-        api().setToken(accessToken);
-    }
-
-    /**
-     * @Deprecated Please use api().query(...)
-     */
-    @Deprecated
-    protected <T> T queryApi(Class<T> clazz, String method, String apiPath) throws IOException, URISyntaxException {
-        return api().query(clazz, method, apiPath);
-    }
-
-    /**
-     * @Deprecated Please use api().query(...)
-     */
-    @Deprecated
-    protected <T> T queryApi(Class<T> clazz, String method, String apiPath, List<NameValuePair> nvps) throws IOException, URISyntaxException {
-        return api().query(clazz, method, apiPath, nvps);
-    }
-
-    /**
-     * @Deprecated Please use api().query(...)
-     */
-    @Deprecated
-    protected <T> T queryApi(TypeReference<T> typeRef, String method, String apiPath, List<NameValuePair> params) throws IOException, URISyntaxException {
-        return api().query(typeRef, method, apiPath, params);
-    }
-
-    /**
-     * @param apiPath
-     * @Deprecated Please use api().call(...)
-     */
-    @Deprecated
-    protected String callApi(String apiPath) throws IOException, URISyntaxException {
-        return api().call(apiPath);
-    }
-
-    /**
-     * @Deprecated Please use api().call(...)
-     */
-    @Deprecated
-    protected String callApi(String method, String apiPath) throws IOException, URISyntaxException {
-        return api().call(method, apiPath, new ArrayList<>());
-    }
-
-    /**
-     * @Deprecated Please use api().call(...)
-     */
-    @Deprecated
-    protected String callApi(String method, String apiPath, List<NameValuePair> nvps) throws IOException, URISyntaxException {
-        return api().call(method, apiPath, nvps, null);
-    }
-
-    /**
-     * @Deprecated Please use api().callJSON(...)
-     */
-    @Deprecated
-    protected String callJSON(String method, String apiPath, Object jsonable) throws IOException, URISyntaxException {
-        return api().callJSON(method, apiPath, new ArrayList<>(), jsonable);
-    }
-
-    /**
-     * @Deprecated Please use api().callJSON(...)
-     */
-    @Deprecated
-    protected String callJSON(String method, String apiPath, List<NameValuePair> nvps, Object jsonable) throws IOException, URISyntaxException {
-        return api().callJSON(method, apiPath, nvps, jsonable);
-    }
-
-    /**
-     * @Deprecated Please use api().call(...)
-     */
-    @Deprecated
-    protected String call(String method, String apiPath, List<NameValuePair> nvps, HttpEntity entity) throws IOException, URISyntaxException {
-        return api().call(method, apiPath, nvps, entity);
     }
 
     public OidcTokenProvider createOidcTokenProvider() {

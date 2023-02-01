@@ -38,7 +38,7 @@ public class FormUtils {
         if (authSelections != null) {
             regCtx.setAlternatives(authSelections.stream()
                     .map(FormUtils::toAlternativeAuthenticator)
-                    .collect(Collectors.toList()));
+                    .toList());
         } else {
             regCtx.setAlternatives(Collections.emptyList());
         }
@@ -78,7 +78,7 @@ public class FormUtils {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
-        List<AlternativeAuthenticator> credentials = context.getSession().userCredentialManager().getStoredCredentialsStream(context.getRealm(), context.getUser())
+        List<AlternativeAuthenticator> credentials = context.getUser().credentialManager().getStoredCredentialsStream()
                 .map(c -> {
                     AuthenticationExecutionModel authExec = authTypes.get(c.getType());
                     if (authExec == null) {

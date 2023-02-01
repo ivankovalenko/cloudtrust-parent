@@ -3,7 +3,6 @@ package io.cloudtrust.keycloak.models;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.keycloak.credential.CredentialModel;
 import org.keycloak.credential.CredentialProvider;
@@ -23,9 +22,9 @@ public class CtAuthenticatorBean<T> {
     public CtAuthenticatorBean(KeycloakSession session, UserModel user, String selectedCredentialId, String credentialModelType,
             String credProviderFactoryProviderId, Function<CredentialModel, T> converter) {
         RealmModel realm = session.getContext().getRealm();
-        this.userCredentials = session.userCredentialManager().getStoredCredentialsByTypeStream(realm, user, credentialModelType)
+        this.userCredentials = user.credentialManager().getStoredCredentialsByTypeStream(credentialModelType)
                 .map(converter)
-                .collect(Collectors.toList());
+                .toList();
 
         // This means user did not yet manually selected any OTP credential through the UI. So just go with the default one with biggest priority
         if (selectedCredentialId == null || selectedCredentialId.isEmpty()) {

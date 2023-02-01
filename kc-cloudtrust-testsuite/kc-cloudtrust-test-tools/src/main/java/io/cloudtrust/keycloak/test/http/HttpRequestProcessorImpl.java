@@ -1,18 +1,14 @@
 package io.cloudtrust.keycloak.test.http;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.cloudtrust.keycloak.test.util.JsonToolbox;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.xnio.streams.BufferedChannelInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -72,20 +68,8 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
     }
 
     @Override
-    public <T> T body(Class<T> classRef) throws IOException {
-        String content = body();
-        return StringUtils.isBlank(content) ? null : new ObjectMapper().readValue(content, classRef);
-    }
-
-    @Override
-    public <T> T body(TypeReference<T> typeRef) throws IOException {
-        String content = body();
-        return StringUtils.isBlank(content) ? null : new ObjectMapper().readValue(content, typeRef);
-    }
-
-    @Override
     public void statusCode(int status) {
-        this.exchange.setResponseCode(status);
+        this.exchange.setStatusCode(status);
     }
 
     @Override
@@ -95,21 +79,11 @@ public class HttpRequestProcessorImpl implements HttpRequestProcessor {
 
     @Override
     public void write(byte[] bytes) throws IOException {
-        this.output().write(bytes);
+        this.exchange.getResponseSender().send(ByteBuffer.wrap(bytes));
     }
 
     @Override
-    public void write(String data) throws IOException {
-        this.output().write(data.getBytes(StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public void writeJson(Object obj) throws IOException {
-        this.exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "application/json");
-        this.write(JsonToolbox.toString(obj));
-    }
-
-    @Override
+    @Deprecated
     public OutputStream output() {
         this.startBlocking();
         return this.exchange.getOutputStream();

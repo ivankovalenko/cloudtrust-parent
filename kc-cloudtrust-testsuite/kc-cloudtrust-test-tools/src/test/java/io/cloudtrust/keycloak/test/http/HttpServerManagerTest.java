@@ -1,8 +1,12 @@
 package io.cloudtrust.keycloak.test.http;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+
 import io.cloudtrust.keycloak.test.util.ConsumerExcept;
 import io.cloudtrust.keycloak.test.util.JsonToolbox;
+
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -97,11 +101,9 @@ public class HttpServerManagerTest {
                 response.put("path", hrp.path());
                 response.put("status", Integer.toString(status));
                 hrp.headers().getHeaderNames().forEach(name -> response.put(name, hrp.headers().getFirstHeader(name)));
-                Map<String, String> body = hrp.body(mapTypeRef);
-                if (body != null) {
-                    body.putAll(response);
-                }
-                hrp.writeJson(response);
+                final Map<String, String> body = ObjectUtils.defaultIfNull(hrp.body(mapTypeRef), new HashMap<>());
+                body.putAll(response);
+                hrp.writeJson(body);
             }
         };
     }
@@ -121,10 +123,14 @@ public class HttpServerManagerTest {
         }
     }
 
-    public static Stream<Arguments> serverContentSamples() {
+    public static Stream<Arguments> serverContentSamples() throws JsonProcessingException {
+        Map<String, String> data = new HashMap<>();
+        data.put("dummy", "value");
+
         return Stream.of(
                 Arguments.of("GET", "http://localhost:9995/status/302", null, 302, Collections.singletonList("GET")),
-                Arguments.of("POST", "http://localhost:9995/", null, 404, Collections.emptyList())
+                Arguments.of("POST", "http://localhost:9995/", null, 404, Collections.emptyList()),
+                Arguments.of("POST", "http://localhost:9995/status/201", data, 201, Collections.emptyList())
         );
     }
 

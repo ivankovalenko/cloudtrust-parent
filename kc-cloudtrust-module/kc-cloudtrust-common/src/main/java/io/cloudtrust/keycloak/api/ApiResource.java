@@ -34,9 +34,17 @@ public class ApiResource {
     @Context
     protected ClientConnection clientConnection;
 
+    /**
+     * @deprecated request and response are often not injected correctly
+     */
+    @Deprecated
     @Context
     protected HttpRequest request;
 
+    /**
+     * @deprecated request and response are often not injected correctly
+     */
+    @Deprecated
     @Context
     protected HttpResponse response;
 
@@ -94,11 +102,23 @@ public class ApiResource {
         return new AdminAuth(realm, authResult.getToken(), authResult.getUser(), client);
     }
 
+    /**
+     * @deprecated request and response are often not injected correctly
+     */
+    @Deprecated
     protected AdminAuth auth() {
         return auth(request);
     }
 
+    /**
+     * @deprecated request and response are often not injected correctly
+     */
+    @Deprecated
     protected AdminAuth auth(HttpRequest request) {
+        return auth(request, response);
+    }
+
+    protected AdminAuth auth(HttpRequest request, HttpResponse response) {
         AdminAuth auth = authenticateRealmAdminRequest(request.getHttpHeaders());
         if (auth == null) {
             throw new NotAuthorizedException("Can't get AdminAuth");
@@ -139,7 +159,7 @@ public class ApiResource {
     }
 
     protected UserModel getUser(RealmModel realm, String userId, AdminAuth auth) {
-        UserModel user = session.userStorageManager().getUserById(realm, userId);
+        UserModel user = session.users().getUserById(realm, userId);
         if (user == null) {
             LOG.infof("Can't find user %s", userId);
             throw new NotFoundException("notFound.user");

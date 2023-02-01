@@ -1,9 +1,8 @@
 package io.cloudtrust.keycloak;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
@@ -51,7 +50,7 @@ public class ThemeUtilsTest {
 
 	@BeforeEach
 	public void setup() throws IOException {
-		MockitoAnnotations.initMocks(this);
+		MockitoAnnotations.openMocks(this);
 
 		Mockito.when(keycloakSession.getContext()).thenReturn(context);
 		Mockito.when(context.getRealm()).thenReturn(realm);
@@ -79,8 +78,14 @@ public class ThemeUtilsTest {
 
 	@ParameterizedTest
 	@MethodSource("findThemeSamples")
-	void findThemeTest(Type themeType, BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> providersFunc, String expectedTheme) throws IOException {
-		Set<ThemeProvider> providers = providersFunc.apply(accountAndAdminThemeProvider, emailAndLoginThemeProvider);
+	void findThemeTest(Type themeType, int expectedThemes, String expectedTheme) throws IOException {
+		Set<ThemeProvider> providers = new HashSet<>();
+		if ((expectedThemes&ACCOUNT_AND_ADMIN_THEME_PROVIDER)!=0) {
+			providers.add(accountAndAdminThemeProvider);
+		}
+		if ((expectedThemes&EMAIL_AND_LOGIN_THEME_PROVIDER)!=0) {
+			providers.add(emailAndLoginThemeProvider);
+		}
 		Mockito.when(keycloakSession.getAllProviders(ThemeProvider.class)).thenReturn(providers);
 
 		Theme theme = ThemeUtils.findTheme(keycloakSession, themeType);
@@ -91,20 +96,19 @@ public class ThemeUtilsTest {
 		Assertions.assertEquals(expectedTheme, theme.getName());
 	}
 
-	public static Stream<Arguments> findThemeSamples() {
-		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> emptyProviders = (p1, p2) -> Collections.emptySet();
-		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> accountAdminProviders = (p1, p2) -> Set.of(p1);
-		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> emailLoginProviders = (p1, p2) -> Set.of(p2);
-		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> allProviders = (p1, p2) -> Set.of(p1, p2);
+	private static final int NO_THEME_PROVIDER = 0;
+	private static final int ACCOUNT_AND_ADMIN_THEME_PROVIDER = 2;
+	private static final int EMAIL_AND_LOGIN_THEME_PROVIDER = 1;
 
+	public static Stream<Arguments> findThemeSamples() {
 		return Stream.of(
-				Arguments.of(Type.ACCOUNT, emptyProviders, null),
-				Arguments.of(Type.ACCOUNT, emailLoginProviders, null),
-				Arguments.of(Type.ACCOUNT, allProviders, "account"),
-				Arguments.of(Type.ADMIN, accountAdminProviders, "admin"),
-				Arguments.of(Type.EMAIL, emailLoginProviders, "email"),
-				Arguments.of(Type.LOGIN, emailLoginProviders, "login"),
-				Arguments.of(Type.COMMON, allProviders, null)
+				Arguments.of(Type.ACCOUNT, NO_THEME_PROVIDER, null),
+				Arguments.of(Type.ACCOUNT, EMAIL_AND_LOGIN_THEME_PROVIDER, null),
+				Arguments.of(Type.ACCOUNT, ACCOUNT_AND_ADMIN_THEME_PROVIDER | EMAIL_AND_LOGIN_THEME_PROVIDER, "account"),
+				Arguments.of(Type.ADMIN, ACCOUNT_AND_ADMIN_THEME_PROVIDER, "admin"),
+				Arguments.of(Type.EMAIL, EMAIL_AND_LOGIN_THEME_PROVIDER, "email"),
+				Arguments.of(Type.LOGIN, EMAIL_AND_LOGIN_THEME_PROVIDER, "login"),
+				Arguments.of(Type.COMMON, ACCOUNT_AND_ADMIN_THEME_PROVIDER | EMAIL_AND_LOGIN_THEME_PROVIDER, null)
 		);
 	}
 }

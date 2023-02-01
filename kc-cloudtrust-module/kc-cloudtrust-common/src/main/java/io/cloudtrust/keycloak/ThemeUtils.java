@@ -26,18 +26,13 @@ public class ThemeUtils {
      */
     public static Theme findTheme(KeycloakSession session, Theme.Type type) throws IOException {
         RealmModel realm = session.getContext().getRealm();
-        switch (type) {
-            case ACCOUNT:
-                return findThemeByName(session, type, realm.getAccountTheme());
-            case ADMIN:
-                return findThemeByName(session, type, realm.getAdminTheme());
-            case EMAIL:
-                return findThemeByName(session, type, realm.getEmailTheme());
-            case LOGIN:
-                return findThemeByName(session, type, realm.getLoginTheme());
-            default:
-                return null;
-        }
+        return switch (type) {
+            case ACCOUNT -> findThemeByName(session, type, realm.getAccountTheme());
+            case ADMIN -> findThemeByName(session, type, realm.getAdminTheme());
+            case EMAIL -> findThemeByName(session, type, realm.getEmailTheme());
+            case LOGIN -> findThemeByName(session, type, realm.getLoginTheme());
+            default -> null;
+        };
     }
 
     /**
@@ -67,7 +62,7 @@ public class ThemeUtils {
      *
      * @param path The path to the resource
      * @return A stream to a resource
-     * @throws IOException
+     * @throws IOException Can't find resource
      */
     public static InputStream getStreamToResourceImage(KeycloakSession session, String path) throws IOException {
         // We grab the current theme
