@@ -110,7 +110,7 @@ public class KeycloakQuarkusConfiguration {
             return this;
         }
 
-        private final Pattern versionPattern = Pattern.compile("^(.+)(-\\d+.\\d+.\\d+)(\\..+)$");
+        private final Pattern versionPattern = Pattern.compile("^(.+)(-\\d+.\\d+.\\d+)([\\.\\-].+)$");
 
         private Pair<String, String> splitVersion(String name) {
             Matcher m = versionPattern.matcher(name);

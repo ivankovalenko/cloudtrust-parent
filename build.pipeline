@@ -1,0 +1,6 @@
+cloudtrustParentPipeline('kc-cloudtrust-parent', [
+    [name: 'cloudtrust-common', path: './cloudtrust-common'],
+    [name: 'cloudtrust-test-tools', path: './cloudtrust-test-tools'],
+    [name: 'kc-cloudtrust-common', path: './kc-cloudtrust-module/kc-cloudtrust-common', pom: './kc-cloudtrust-module/pom.xml'],
+    [name: 'kc-cloudtrust-test-tools', path: './kc-cloudtrust-testsuite/kc-cloudtrust-test-tools', pom: './kc-cloudtrust-testsuite/pom.xml']
+])
