@@ -28,7 +28,7 @@
         <version.jboss.maven.plugin>7.9.Final</version.jboss.maven.plugin>
         <version.wildfly.maven.plugin>2.0.2.Final</version.wildfly.maven.plugin>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        
+
         <arquillian-graphene.version>2.5.4</arquillian-graphene.version>
         <undertow.version>1.0.0.Alpha2</undertow.version>
         <resteasy.version>4.7.5.Final</resteasy.version>
@@ -38,7 +38,7 @@
         <greenmail.version>1.6.8</greenmail.version>
         <systemlambda.version>1.2.1</systemlambda.version>
         <selenium.version>4.1.1</selenium.version>
-		<htmlunit.version>3.58.0</htmlunit.version>
+        <htmlunit.version>3.58.0</htmlunit.version>
         <spotbugs.version>4.2.3</spotbugs.version>
         <owasp-check.version>6.5.3</owasp-check.version>
         <hamcrest.version>1.3</hamcrest.version>
@@ -85,8 +85,8 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
                 <exclusion>
-                	<groupId>junit</groupId>
-                	<artifactId>junit</artifactId>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
@@ -146,7 +146,12 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-test-tools</artifactId>
-                <version>${project.version}</version>
+                <version>${kc-cloudtrust.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.keycloak</groupId>
+                <artifactId>keycloak-server-spi</artifactId>
+                <version>${keycloak.version}</version>
             </dependency>
             <!-- env variables for unit tests -->
             <dependency>
@@ -219,6 +224,10 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.22.2</version>
+                    <configuration>
+                        <!-- Introducing JDK17, tests are failing if not configured with the following line -->
+                        <argLine>--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

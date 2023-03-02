@@ -253,7 +253,6 @@ class EventMatchersTest {
 
     private static Stream<Arguments> doesNotHaveErrorSamples() {
         EventRepresentation eventNoError = eventBuilder().build();
-        EventRepresentation eventError = eventBuilder().error("any error value").build();
         EventRepresentation eventUndesiredError = eventBuilder().error("undesired").build();
 
         return Stream.of(

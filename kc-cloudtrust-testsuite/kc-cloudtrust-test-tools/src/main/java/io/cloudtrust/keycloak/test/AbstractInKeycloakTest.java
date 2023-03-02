@@ -24,7 +24,6 @@ import org.keycloak.admin.client.resource.AuthenticationManagementResource;
 import org.keycloak.admin.client.resource.ClientResource;
 import org.keycloak.admin.client.resource.IdentityProviderResource;
 import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
 import org.keycloak.representations.idm.AdminEventRepresentation;
 import org.keycloak.representations.idm.ClientRepresentation;
@@ -431,19 +430,26 @@ public abstract class AbstractInKeycloakTest {
         this.sleep(maxDuration.toMillis(), interval.toMillis(), shouldStop);
     }
 
-    protected void sleep(Duration maxDuration, long interval, BooleanSupplier shouldStop) {
-        this.sleep(maxDuration.toMillis(), interval, shouldStop);
+    protected boolean sleep(Duration maxDuration, long interval, BooleanSupplier shouldStop) {
+        return this.sleep(maxDuration.toMillis(), interval, shouldStop);
     }
 
-    protected void sleep(Duration maxDuration, BooleanSupplier shouldStop) {
-        sleep(maxDuration.toMillis(), 100, shouldStop);
+    protected boolean sleep(Duration maxDuration, BooleanSupplier shouldStop) {
+        return sleep(maxDuration.toMillis(), 100, shouldStop);
     }
 
-    protected void sleep(long maxDuration, BooleanSupplier shouldStop) {
-        sleep(maxDuration, 100, shouldStop);
+    protected boolean sleep(long maxDuration, BooleanSupplier shouldStop) {
+        return sleep(maxDuration, 100, shouldStop);
     }
 
-    protected void sleep(long maxDuration, long interval, BooleanSupplier shouldStop) {
+    /**
+     * Sleep for the given maxDuration. Stops if provided supplier is true
+     * @param maxDuration Milliseconds
+     * @param interval Interval between supplier evaluation
+     * @param shouldStop Supplier which returns true if the sleep period can be interrupted
+     * @return True if supplier told to stop, false in case of timeout
+     */
+    protected boolean sleep(long maxDuration, long interval, BooleanSupplier shouldStop) {
         try {
             long limit = System.currentTimeMillis() + maxDuration;
             while (System.currentTimeMillis() < limit) {
@@ -451,12 +457,13 @@ public abstract class AbstractInKeycloakTest {
                 Thread.sleep(Math.min(interval, maxPause));
                 maxDuration -= interval;
                 if (shouldStop.getAsBoolean()) {
-                    break;
+                    return true;
                 }
             }
         } catch (InterruptedException ie) {
             // Ignore exception
         }
+        return false;
     }
 
     /**

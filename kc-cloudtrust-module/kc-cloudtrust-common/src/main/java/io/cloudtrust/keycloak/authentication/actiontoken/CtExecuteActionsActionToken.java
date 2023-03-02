@@ -32,6 +32,7 @@ public class CtExecuteActionsActionToken extends DefaultActionToken {
     }
 
     // Used by JSON deserialization
+    @SuppressWarnings("unused")
     private CtExecuteActionsActionToken() {
     }
 

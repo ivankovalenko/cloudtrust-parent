@@ -45,11 +45,19 @@ public class FormUtils {
         return regCtx;
     }
 
+    /**
+     * @deprecated We shall try to use the Keycloak OOTB way of selecting authenticators. Use new CtAuthenticatorBean(...) instead
+     */
+    @Deprecated
     public static LoginFormsProvider getFormWithAuthenticators(AuthenticationFlowContext context, String selectedCredentialId) {
         return getFormWithAuthenticators(context, selectedCredentialId, u -> {
         });
     }
 
+    /**
+     * @deprecated We shall try to use the Keycloak OOTB way of selecting authenticators. Use new CtAuthenticatorBean(...) instead
+     */
+    @Deprecated
     public static LoginFormsProvider getFormWithAuthenticators(AuthenticationFlowContext context, String selectedCredentialId, Consumer<AlternativeAuthenticator> optionUpdater) {
         LoginFormsProvider form = context.form();
 
