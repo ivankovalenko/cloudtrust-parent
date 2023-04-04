@@ -23,9 +23,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <cloudtrust.version>3.0.0-SNAPSHOT</cloudtrust.version>
-        <keycloak.version>18.0.0</keycloak.version>
-        <kc-cloudtrust.version>18.0.0-SNAPSHOT</kc-cloudtrust.version>
+        <keycloak.version>20.0.3</keycloak.version>
+        <kc-cloudtrust.version>20.0.3-SNAPSHOT</kc-cloudtrust.version>
 
+        <resteasy.version>4.7.9.Final</resteasy.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
@@ -45,6 +46,7 @@
     </properties>
 
     <distributionManagement>
+	    <!--
         <repository>
             <id>project-release</id>
             <url>https://artifactory.svc.elca.ch/artifactory/prj_cloudtrust_release</url>
@@ -53,6 +55,7 @@
             <id>project-snapshot</id>
             <url>https://artifactory.svc.elca.ch/artifactory/prj_cloudtrust_snapshot</url>
         </snapshotRepository>
+-->
     </distributionManagement>
 
     <dependencyManagement>

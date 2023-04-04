@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,9 +94,9 @@ public class ThemeUtilsTest {
 
 	public static Stream<Arguments> findThemeSamples() {
 		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> emptyProviders = (p1, p2) -> Collections.emptySet();
-		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> accountAdminProviders = (p1, p2) -> Set.of(p1);
-		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> emailLoginProviders = (p1, p2) -> Set.of(p2);
-		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> allProviders = (p1, p2) -> Set.of(p1, p2);
+		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> accountAdminProviders = (p1, p2) -> Collections.singleton(p1);
+		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> emailLoginProviders = (p1, p2) -> Collections.singleton(p2);
+		BiFunction<ThemeProvider, ThemeProvider, Set<ThemeProvider>> allProviders = (p1, p2) -> Stream.of(p1,p2).collect(Collectors.toSet()); //Set.<ThemeProvider>of(p1, p2);
 
 		return Stream.of(
 				Arguments.of(Type.ACCOUNT, emptyProviders, null),

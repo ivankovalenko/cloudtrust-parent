@@ -4,13 +4,13 @@
     <parent>
         <groupId>org.keycloak</groupId>
         <artifactId>keycloak-parent</artifactId>
-        <version>18.0.0</version>
+        <version>20.0.3</version>
         <relativePath />
     </parent>
 
     <groupId>io.cloudtrust</groupId>
     <artifactId>kc-cloudtrust-module</artifactId>
-    <version>18.0.0-SNAPSHOT</version>
+    <version>20.0.3-SNAPSHOT</version>
     <description>Parent for keycloak modules</description>
     <packaging>pom</packaging>
 
@@ -20,8 +20,8 @@
 
     <properties>
         <cloudtrust.version>3.0.0-SNAPSHOT</cloudtrust.version>
-        <keycloak.version>18.0.0</keycloak.version>
-        <kc-cloudtrust.version>18.0.0-SNAPSHOT</kc-cloudtrust.version>
+        <keycloak.version>20.0.3</keycloak.version>
+        <kc-cloudtrust.version>20.0.3-SNAPSHOT</kc-cloudtrust.version>
         <flatbuffers.version>1.10.0</flatbuffers.version>
         <apache-collections.version>4.4</apache-collections.version>
         <libphonenumber.version>8.13.3</libphonenumber.version>
@@ -43,6 +43,7 @@
     </properties>
 
     <distributionManagement>
+	    <!--
         <repository>
             <id>project-release</id>
             <url>https://artifactory.svc.elca.ch/artifactory/${releaseRepository}</url>
@@ -50,10 +51,12 @@
         <snapshotRepository>
             <id>project-snapshot</id>
             <url>https://artifactory.svc.elca.ch/artifactory/${snapshotRepository}</url>
-        </snapshotRepository>
+	</snapshotRepository>
+		-->
     </distributionManagement>
 
     <repositories>
+	    <!--
         <repository>
             <id>project-release</id>
             <url>https://artifactory.svc.elca.ch/artifactory/prj_cloudtrust_release</url>
@@ -73,7 +76,8 @@
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-        </repository>
+	</repository>
+	-->
     </repositories>
 
     <dependencyManagement>
@@ -86,7 +90,7 @@
             <dependency>
                 <groupId>io.cloudtrust</groupId>
                 <artifactId>kc-cloudtrust-common</artifactId>
-                <version>18.0.0-SNAPSHOT</version>
+                <version>20.0.3-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.keycloak</groupId>
@@ -142,6 +146,7 @@
                 <version>${keycloak.version}</version>
                 <scope>provided</scope>
             </dependency>
+	    <!--
             <dependency>
                 <groupId>org.jboss.resteasy</groupId>
                 <artifactId>resteasy-jaxrs</artifactId>
@@ -161,7 +166,8 @@
                         <groupId>org.slf4j</groupId>
                     </exclusion>
                 </exclusions>
-            </dependency>
+	    </dependency>
+		-->
         </dependencies>
     </dependencyManagement>
 
